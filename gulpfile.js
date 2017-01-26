@@ -1,6 +1,30 @@
 var gulp = require('gulp');
 var pug = require('gulp-pug');
+var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
+var babel = require('gulp-babel');
+
+gulp.task('babel', () => {
+    return gulp.src('src/app/*.js')
+        .pipe(babel({
+            presets: ['es2015']
+        }))
+        .pipe(gulp.dest('app'));
+});
+
+gulp.task('babel:watch', function () {
+  gulp.watch('./src/app/*.js', ['sass']);
+});
+
+gulp.task('sass', function () {
+  return gulp.src('./src/sass/*.sass')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('./css'));
+});
+
+gulp.task('sass:watch', function () {
+  gulp.watch('./src/sass/*.sass', ['sass']);
+});
 
 gulp.task('pug', function(){
   gulp.src('./pug/*.pug')
@@ -10,7 +34,11 @@ gulp.task('pug', function(){
   .pipe(gulp.dest('./'))
 });
 
-gulp.task('default', () =>
+gulp.task('watch', function(){
+  gulp.watch('./src/pug/*.pug',['pug'])
+});
+
+gulp.task('autoprefixer', () =>
     gulp.src('src/css/*.css')
         .pipe(autoprefixer({
             browsers: ['last 2 versions'],
@@ -19,8 +47,8 @@ gulp.task('default', () =>
         .pipe(gulp.dest('./style'))
 );
 
-gulp.task('watch', function(){
-  gulp.watch('./src/pug/*.pug',['pug'])
+gulp.task('auto:watch', function(){
+  gulp.watch('./src/css/*.css',['autoprefixer'])
 });
 
-gulp.task('default', ['pug','watch'])
+gulp.task('default', ['watch','sass:watch','babel:watch', 'auto:watch'])

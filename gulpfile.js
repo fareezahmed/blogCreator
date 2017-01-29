@@ -5,15 +5,15 @@ var autoprefixer = require('gulp-autoprefixer');
 var babel = require('gulp-babel');
 
 gulp.task('babel', () => {
-    return gulp.src('src/app/*.js')
+    return gulp.src('src/**/*.js')
         .pipe(babel({
             presets: ['es2015']
         }))
-        .pipe(gulp.dest('app'));
+        .pipe(gulp.dest('./'));
 });
 
 gulp.task('babel:watch', function () {
-  gulp.watch('./src/app/*.js', ['sass']);
+  gulp.watch('./src/**/*.js', ['babel']);
 });
 
 gulp.task('sass', function () {
